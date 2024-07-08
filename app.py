@@ -1,7 +1,7 @@
 import sys
 
 
-def show_tape(tape, position):
+def show_tape(tape, position,cn,ri,mn,wi,lr):
     if len(tape) > 15:
         for n in range(len(tape)):
             if (position == n):
@@ -15,17 +15,24 @@ def show_tape(tape, position):
         print("")
 
     else:
+     
         for n in range(len(tape)):
             if (position == n):
                 print(" _↓_ ", end="")
             else:
                 print(" ___ ", end="")
-        print("")
+
+        if not cn == "":    
+            print(f"    δ({cn},{ri}) → ({mn},{wi},{lr})",)
+        else:
+            print("")
 
         for n in tape:
             print(f"| {n} |", end="")
+
         print("")
 
+   
         for n in range(len(tape)):
             print(" ‾‾‾ ", end="")
 
@@ -36,13 +43,13 @@ def q0(tape, position):
     if tape[position] == "0":
         tape[position] = "A"
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q0","0","q1","A","R")
         q1(tape, position)
 
     if tape[position] == "B":
         tape[position] = tape[position]  #do nothing
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q0","B","q3","B","R")
         q3(tape, position)
 
     if tape[position] == "_":
@@ -60,13 +67,14 @@ def q1(tape, position):
     if tape[position] == "0" or (tape[position]) == "B":
         tape[position] = tape[position]  #do nothing
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q1",tape[position -1 ],"q1",tape[position -1],"R")
         q1(tape, position)
+        
 
     if tape[position] == "1":
         tape[position] = "B"
         position -= 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q1", "1","q2","B","L")
         q2(tape, position)
 
     if tape[position] == "_":
@@ -79,13 +87,13 @@ def q2(tape, position):
     if tape[position] == "0" or (tape[position]) == "B":
         tape[position] = tape[position]  #do nothing
         position -= 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q2",tape[position + 1],"q2",tape[position + 1],"L")
         q2(tape, position)
 
     if tape[position] == "A":
         tape[position] = tape[position]
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q2",tape[position -1 ],"q0",tape[position -1 ],"R")
         q0(tape, position)
 
 
@@ -93,18 +101,17 @@ def q3(tape, position):
     if tape[position] == "B":
         tape[position] = tape[position]  #do nothing
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q3",tape[position - 1],"q3",tape[position - 1],"R")
         q3(tape, position)
 
     if tape[position] == "1":
         tape[position] = tape[position]  #do nothing
         position -= 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q3",tape[position + 1 ],"q4",tape[position + 1],"L")
         q4(tape, position)
 
     if tape[position] == "_":
         print(f"✅ string \"{inputs}\" is Accepted")
-
         raise Exception
 
 
@@ -113,13 +120,13 @@ def q4(tape, position):
             tape[position]) == "B":
         tape[position] = tape[position]  #do nothing
         position -= 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q4",tape[position +1 ],"q4",tape[position +1],"L")
         q4(tape, position)
 
     if tape[position] == "_":
         tape[position] = tape[position]  #do nothing
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q4",tape[position - 1],"q5",tape[position - 1],"R")
         q5(tape, position)
 
 
@@ -127,13 +134,13 @@ def q5(tape, position):
     if tape[position] == "X":
         tape[position] = tape[position]  #do nothing
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q5",tape[position - 1],"q5",tape[position - 1],"R")
         q5(tape, position)
 
     if tape[position] == "A":
         tape[position] = "X"
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q5",tape[position - 1],"q6","X","R")
         q6(tape, position)
 
     if tape[position] == "B":
@@ -147,13 +154,13 @@ def q6(tape, position):
             tape[position]) == "B":
         tape[position] = tape[position]  #do nothing
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q6",tape[position - 1],"q6",tape[position - 1],"R")
         q6(tape, position)
 
     if tape[position] == "1":
         tape[position] = "X"
         position += 1
-        show_tape(tape, position)
+        show_tape(tape, position,"q6",tape[position - 1],"q3","X","R")
         q3(tape, position)
 
 
@@ -174,7 +181,7 @@ def main():
         tape.append(str(i))
     tape.append("_")
 
-    show_tape(tape, position)
+    show_tape(tape, position,"","","","","")
     q0(tape, position)
 
     sys.setrecursionlimit(sys.getrecursionlimit() / 5)
